@@ -10,8 +10,7 @@ namespace Mastercore.WirelessEngine
         static void Main(string[] args)
         {
             Console.Title = "Mastercore Wireless Engine v1.0";
-            
-            // Render Header Banner
+
             var banner = new FigletText("MASTERCORE")
             {
                 Justification = Justify.Left,
@@ -20,42 +19,35 @@ namespace Mastercore.WirelessEngine
             AnsiConsole.Write(banner);
 
             AnsiConsole.MarkupLine("[bold green]====================================================================[/]");
-            AnsiConsole.MarkupLine("[bold white] Universal Low-Latency Hotspot Engine & DFS Bypass [/]");
+            AnsiConsole.MarkupLine("[bold white] Universal Low-Latency Hotspot Engine & Hardware Diagnostic Control [/]");
             AnsiConsole.MarkupLine("[bold green]====================================================================[/]\n");
 
-            // Admin Privilege Check
             if (!IsAdministrator())
             {
                 AnsiConsole.MarkupLine("[bold red][[!]] ERROR: Elevated privileges required.[/]");
-                AnsiConsole.MarkupLine("[yellow]Please restart VS Code or Terminal as Administrator to access Win32 WLAN & COM Sharing APIs.[/]");
+                AnsiConsole.MarkupLine("[yellow]Please run terminal or VS Code as Administrator to access Win32 WLAN & COM APIs.[/]");
                 return;
             }
 
-            // Escaped brackets using [[✓]] so Spectre doesn't parse it as a style name
             AnsiConsole.MarkupLine("[bold green][[✓]] Administrative rights verified.[/]\n");
 
-            // Dashboard Status Panel Layout
-            var table = new Table().Border(TableBorder.Rounded);
-            table.AddColumn("[bold cyan]Pipeline Layer[/]");
-            table.AddColumn("[bold cyan]Interface / Config[/]");
-            table.AddColumn("[bold cyan]Status[/]");
+            // Execute Hardware Diagnostics
+            AnsiConsole.MarkupLine("[bold yellow]Running Hardware Abstraction Layer (HAL) Diagnostics...[/]\n");
+            var detectedTier = HardwareDiagnosticEngine.DisplayDiagnosticReport();
 
-            table.AddRow("Inbound Link", "5GHz (Channel 60 - DFS)", "[green]Connected[/]");
-            table.AddRow("Outbound Hotspot", "MediaTek 2.4GHz (Channel 1)", "[yellow]Standby[/]");
-            table.AddRow("Routing Mode", "NAT Firewall", "[green]Isolated[/]");
-            table.AddRow("QoS Gaming Priority", "Multimedia SystemProfile", "[green]Active[/]");
+            if (detectedTier == HardwareTier.Unsupported)
+            {
+                AnsiConsole.MarkupLine("\n[bold red][!] Error: No active wireless adapters detected on this host system.[/]");
+                return;
+            }
 
-            AnsiConsole.Write(table);
-
-            AnsiConsole.MarkupLine("\n[bold gray]Press Ctrl+C to stop engine loop...[/]");
+            AnsiConsole.MarkupLine("\n[bold green][[✓]] Hardware diagnostics complete. System initialized.[/]");
         }
 
         [SupportedOSPlatform("windows")]
         private static bool IsAdministrator()
         {
-            if (!OperatingSystem.IsWindows())
-                return false;
-
+            if (!OperatingSystem.IsWindows()) return false;
             using var identity = WindowsIdentity.GetCurrent();
             var principal = new WindowsPrincipal(identity);
             return principal.IsInRole(WindowsBuiltInRole.Administrator);
