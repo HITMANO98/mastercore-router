@@ -1,10 +1,10 @@
 @echo off
-title MT7601 Ultra-Low Latency Gaming Controller
+title Ultra-Low Latency Gaming Router/SHare
 :menu
 cls
 color 0A
 echo ====================================================
-echo        MT7601 GAMING-OPTIMIZED HOTSPOT ENGINE       
+echo         GAMING-OPTIMIZED HOTSPOT ENGINE       
 echo ====================================================
 echo  [1] START Hotspot (Max Speed + Gaming QoS Injection)
 echo  [2] STOP Hotspot (Clean Tear Down)
